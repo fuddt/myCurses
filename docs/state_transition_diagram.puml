@@ -6,4 +6,16 @@ FileListState --> NewFileState : press 'n'
 MenuState --> FileListState : back
 NewFileState --> FileListState : file created
 
+FileListState : handle_input()
+FileListState : display()
+MenuState : handle_input()
+MenuState : display()
+NewFileState : handle_input()
+NewFileState : display()
+
+FileListState --> FileListState : scroll up
+FileListState --> FileListState : scroll down
+MenuState --> MenuState : scroll up
+MenuState --> MenuState : scroll down
+
 @enduml

@@ -48,10 +48,42 @@ class NewFileState {
     + display(navigator: FileNavigator)
 }
 
+class Command {
+    + execute()
+}
+
+class ViewCommand {
+    - filename: str
+    + __init__(filename: str)
+    + execute()
+}
+
+class EditCommand {
+    - filename: str
+    + __init__(filename: str)
+    + execute()
+}
+
+class RemoveCommand {
+    - filename: str
+    - stdscr: curses.window
+    + __init__(filename: str, stdscr: curses.window)
+    + execute()
+}
+
+class NewFileCommand {
+    + execute()
+}
+
 FileNavigator --> Scroller
 FileNavigator --> State
 State <|-- FileListState
 State <|-- MenuState
 State <|-- NewFileState
+State <|-- Command
+Command <|-- ViewCommand
+Command <|-- EditCommand
+Command <|-- RemoveCommand
+Command <|-- NewFileCommand
 
 @enduml
