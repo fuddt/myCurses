@@ -1,0 +1,9 @@
+@startuml
+
+[*] --> FileListState
+FileListState --> MenuState : select file
+FileListState --> NewFileState : press 'n'
+MenuState --> FileListState : back
+NewFileState --> FileListState : file created
+
+@enduml
