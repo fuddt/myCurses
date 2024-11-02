@@ -4,7 +4,17 @@ from utils.scroller import Scroller
 from services.states import State, get_initial_state
 
 class FileNavigator:
+    """
+    FileNavigatorクラスは、ファイルナビゲーションのロジックを管理します。
+    cursesライブラリを使用して、ターミナル上でファイルの一覧表示や操作を行います。
+    """
+
     def __init__(self, stdscr: curses.window) -> None:
+        """
+        コンストラクタ。初期状態を設定します。
+
+        :param stdscr: cursesウィンドウオブジェクト
+        """
         self.stdscr = stdscr
         self.current_dir = os.getcwd()
         self.files = [".."] + os.listdir(self.current_dir)
@@ -14,12 +24,23 @@ class FileNavigator:
         self.exit_flag = False
 
     def set_state(self, state: State) -> None:
+        """
+        状態を設定します。
+
+        :param state: 新しい状態
+        """
         self.state = state
 
     def refresh_file_list(self) -> None:
+        """
+        ファイルリストを更新します。
+        """
         self.files = [".."] + os.listdir(self.current_dir)
 
     def display_files(self) -> None:
+        """
+        ファイル一覧を表示します。
+        """
         self.stdscr.clear()
         for i in range(self.scroller.display_height):
             file_index = i + self.scroller.offset
@@ -37,6 +58,9 @@ class FileNavigator:
         self.stdscr.refresh()
 
     def display_menu(self) -> None:
+        """
+        メニューを表示します。
+        """
         self.stdscr.clear()
         menu_options = ["view", "edit", "remove", "back"]
         for i, option in enumerate(menu_options):
@@ -49,6 +73,9 @@ class FileNavigator:
         self.stdscr.refresh()
 
     def run(self) -> None:
+        """
+        メインループを実行します。ユーザーの入力を処理し、状態を更新します。
+        """
         while not self.exit_flag:
             self.state.display(self)
             key = self.stdscr.getch()
@@ -59,10 +86,18 @@ class FileNavigator:
                 self.state.handle_input(self, key)
 
     def exit(self) -> None:
+        """
+        アプリケーションを終了します。
+        """
         self.exit_flag = True
 
 # cursesアプリケーションのエントリーポイント
 def list_files(stdscr: curses.window) -> None:
+    """
+    cursesアプリケーションのエントリーポイント。FileNavigatorを初期化し、実行します。
+
+    :param stdscr: cursesウィンドウオブジェクト
+    """
     stdscr.clear()
     stdscr.keypad(True)
     navigator = FileNavigator(stdscr)
