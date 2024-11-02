@@ -1,9 +1,24 @@
 @startuml
 
-[*] --> FileListState
+[*] --> FileListState : Initial state
 FileListState --> MenuState : select file
 FileListState --> NewFileState : press 'n'
 MenuState --> FileListState : back
 NewFileState --> FileListState : file created
+
+state FileListState {
+    :Handles file list display and navigation;
+    :Transitions to MenuState or NewFileState based on user input;
+}
+
+state MenuState {
+    :Handles file operations like view, edit, remove;
+    :Transitions back to FileListState after operation;
+}
+
+state NewFileState {
+    :Handles new file creation;
+    :Transitions back to FileListState after file is created;
+}
 
 @enduml

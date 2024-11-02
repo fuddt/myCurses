@@ -14,4 +14,44 @@ repeat
     endif
 repeat while (not exit_flag)
 
+:Initialize curses window;
+:Initialize current directory;
+:Initialize file list;
+:Initialize selected option;
+:Initialize scroller;
+:Initialize state;
+:Initialize exit flag;
+
+:Display files;
+repeat
+    :Get user input;
+    if (User input is 'q') then (yes)
+        :Exit application;
+        stop
+    else (no)
+        :Handle user input;
+        if (User input is 'up') then (yes)
+            :Scroll up;
+        else (no)
+            if (User input is 'down') then (yes)
+                :Scroll down;
+            else (no)
+                if (User input is 'enter') then (yes)
+                    :Select file;
+                    if (Selected file is directory) then (yes)
+                        :Change directory;
+                        :Refresh file list;
+                    else (no)
+                        :Set state to MenuState;
+                    endif
+                else (no)
+                    if (User input is 'n') then (yes)
+                        :Set state to NewFileState;
+                    endif
+                endif
+            endif
+        endif
+    endif
+repeat while (not exit_flag)
+
 @enduml
