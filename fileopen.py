@@ -1,7 +1,7 @@
 import curses
 import os
 import subprocess
-
+from utils.scroller import Scroller
 
 class FileNavigator:
     def __init__(self, stdscr: curses.window) -> None:
@@ -17,6 +17,7 @@ class FileNavigator:
         self.offset = 0  # 表示オフセット
         self.height, self.width = self.stdscr.getmaxyx()  # ウィンドウの高さと幅を取得
         self.display_height = self.height - 3  # 表示可能な高さを設定
+        self.scroller = Scroller(self.selected_index, self.offset, self.display_height)
 
     def refresh_file_list(self) -> None:
         """
@@ -51,15 +52,9 @@ class FileNavigator:
         :return: 'q'キーが押された場合はFalse、それ以外はTrue。
         """
         if key == curses.KEY_UP:
-            if self.selected_index > 0:
-                self.selected_index -= 1  # 選択インデックスを上に移動
-                if self.selected_index < self.offset:
-                    self.offset -= 1  # オフセットを調整
+            self.scroller.scroll_up()
         elif key == curses.KEY_DOWN:
-            if self.selected_index < len(self.files) - 1:
-                self.selected_index += 1  # 選択インデックスを下に移動
-                if self.selected_index >= self.offset + self.display_height:
-                    self.offset += 1  # オフセットを調整
+            self.scroller.scroll_down(len(self.files))
         elif key == ord('\n'):
             selected_file = self.files[self.selected_index]
             if os.path.isdir(selected_file):
