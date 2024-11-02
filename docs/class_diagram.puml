@@ -1,0 +1,57 @@
+@startuml
+
+class FileNavigator {
+    - stdscr: curses.window
+    - current_dir: str
+    - files: list[str]
+    - selected_option: int
+    - scroller: Scroller
+    - state: State
+    - exit_flag: bool
+    + __init__(stdscr: curses.window)
+    + set_state(state: State)
+    + refresh_file_list()
+    + display_files()
+    + display_menu()
+    + run()
+    + exit()
+}
+
+class Scroller {
+    - selected_index: int
+    - offset: int
+    - display_height: int
+    + __init__(selected_index: int, offset: int, display_height: int)
+    + scroll_up()
+    + scroll_down(list_length: int)
+}
+
+class State {
+    + handle_input(navigator: FileNavigator, key: int)
+    + display(navigator: FileNavigator)
+}
+
+class FileListState {
+    + handle_input(navigator: FileNavigator, key: int)
+    + display(navigator: FileNavigator)
+}
+
+class MenuState {
+    - filename: str
+    + __init__(filename: str)
+    + handle_input(navigator: FileNavigator, key: int)
+    + display(navigator: FileNavigator)
+}
+
+class NewFileState {
+    + handle_input(navigator: FileNavigator, key: int)
+    + display(navigator: FileNavigator)
+}
+
+FileNavigator --> Scroller
+FileNavigator --> State
+State <|-- FileListState
+State <|-- MenuState
+State <|-- NewFileState
+
+@enduml

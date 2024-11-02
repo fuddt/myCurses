@@ -1,0 +1,17 @@
+@startuml
+
+start
+
+:Initialize FileNavigator;
+:Display files;
+repeat
+    :Get user input;
+    if (User input is 'q') then (yes)
+        :Exit application;
+        stop
+    else (no)
+        :Handle user input;
+    endif
+repeat while (not exit_flag)
+
+@enduml
