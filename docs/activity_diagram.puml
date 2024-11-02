@@ -11,6 +11,36 @@ repeat
         stop
     else (no)
         :Handle user input;
+        if (User input is 'n') then (yes)
+            :Create new file;
+            :Refresh file list;
+        else (no)
+            if (User input is Enter) then (yes)
+                :Check if selected file is directory;
+                if (Selected file is directory) then (yes)
+                    :Change directory;
+                    :Refresh file list;
+                else (no)
+                    :Display menu;
+                    repeat
+                        :Get menu input;
+                        if (Menu input is 'b') then (yes)
+                            :Go back to file list;
+                        else (no)
+                            if (Menu input is Enter) then (yes)
+                                :Execute command;
+                                :Refresh file list;
+                                :Go back to file list;
+                            else (no)
+                                :Handle other menu input;
+                            endif
+                        endif
+                    repeat while (in menu)
+                endif
+            else (no)
+                :Handle other input;
+            endif
+        endif
     endif
 repeat while (not exit_flag)
 
