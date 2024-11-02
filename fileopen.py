@@ -48,9 +48,9 @@ class FileNavigator:
         """
         メニューを表示し、選択されたオプションを返します。
 
-        :return: 選択されたオプション（view, edit, remove）。
+        :return: 選択されたオプション（view, edit, remove, new）。
         """
-        menu_options = ["view", "edit", "remove"]
+        menu_options = ["view", "edit", "remove", "new"]
         selected_option = 0
 
         while True:
@@ -109,6 +109,17 @@ class FileNavigator:
                     if confirm_key == ord('y'):
                         os.remove(selected_file)  # ファイルを削除
                         self.refresh_file_list()  # ファイルリストを更新
+                elif option == "new":
+                    self.stdscr.clear()
+                    self.stdscr.addstr(0, 0, "Enter the new filename: ")
+                    curses.echo()
+                    filename = self.stdscr.getstr().decode('utf-8')
+                    curses.noecho()
+                    self.stdscr.clear()
+                    self.stdscr.refresh()
+                    curses.endwin()  # cursesモードを終了
+                    subprocess.run(['vim', filename])  # vimで新しいファイルを作成
+                    curses.doupdate()  # cursesモードを再開
         elif key == ord('q'):
             return False  # 'q'キーが押されたら終了
         return True
