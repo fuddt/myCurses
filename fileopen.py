@@ -43,6 +43,32 @@ class FileNavigator:
                 self.stdscr.addstr(i, 0, f"  {display_name}")  # 通常表示
         self.stdscr.refresh()  # ウィンドウを更新
 
+    def display_menu(self) -> str:
+        """
+        メニューを表示し、選択されたオプションを返します。
+
+        :return: 選択されたオプション（view, edit, remove）。
+        """
+        menu_options = ["view", "edit", "remove"]
+        selected_option = 0
+
+        while True:
+            self.stdscr.clear()
+            for i, option in enumerate(menu_options):
+                if i == selected_option:
+                    self.stdscr.addstr(i, 0, f"> {option}", curses.A_REVERSE)
+                else:
+                    self.stdscr.addstr(i, 0, f"  {option}")
+            self.stdscr.refresh()
+
+            key = self.stdscr.getch()
+            if key == curses.KEY_UP and selected_option > 0:
+                selected_option -= 1
+            elif key == curses.KEY_DOWN and selected_option < len(menu_options) - 1:
+                selected_option += 1
+            elif key == ord('\n'):
+                return menu_options[selected_option]
+
     def handle_key_press(self, key: int) -> bool:
         """
         キー押下イベントを処理します。
@@ -67,11 +93,27 @@ class FileNavigator:
                 os.chdir(self.current_dir)  # カレントディレクトリを変更
                 self.refresh_file_list()  # ファイルリストを更新
             else:
-                self.stdscr.clear()
-                self.stdscr.refresh()
-                curses.endwin()  # cursesモードを終了
-                subprocess.run(['less', selected_file])  # lessコマンドでファイルを表示
-                curses.doupdate()  # cursesモードを再開
+                option = self.display_menu()
+                if option == "view":
+                    self.stdscr.clear()
+                    self.stdscr.refresh()
+                    curses.endwin()  # cursesモードを終了
+                    subprocess.run(['less', selected_file])  # lessコマンドでファイルを表示
+                    curses.doupdate()  # cursesモードを再開
+                elif option == "edit":
+                    self.stdscr.clear()
+                    self.stdscr.refresh()
+                    curses.endwin()  # cursesモードを終了
+                    subprocess.run(['vim', selected_file])  # vimでファイルを編集
+                    curses.doupdate()  # cursesモードを再開
+                elif option == "remove":
+                    self.stdscr.clear()
+                    self.stdscr.addstr(0, 0, f"Are you sure you want to remove {selected_file}? (y/n)")
+                    self.stdscr.refresh()
+                    confirm_key = self.stdscr.getch()
+                    if confirm_key == ord('y'):
+                        os.remove(selected_file)  # ファイルを削除
+                        self.refresh_file_list()  # ファイルリストを更新
         elif key == ord('q'):
             return False  # 'q'キーが押されたら終了
         return True
