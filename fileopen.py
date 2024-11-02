@@ -1,6 +1,7 @@
 import curses
 import os
 import subprocess
+from utils import open_with_vim
 
 
 class FileNavigator:
@@ -12,7 +13,7 @@ class FileNavigator:
         """
         self.stdscr = stdscr
         self.current_dir = os.getcwd()  # 現在のディレクトリを取得
-        self.files = ['..'] + os.listdir(self.current_dir)  # ファイルリストを取得
+        self.files = ['Create New File', '..'] + os.listdir(self.current_dir)  # ファイルリストを取得
         self.selected_index = 0  # 選択されたファイルのインデックス
         self.offset = 0  # 表示オフセット
         self.height, self.width = self.stdscr.getmaxyx()  # ウィンドウの高さと幅を取得
@@ -22,7 +23,7 @@ class FileNavigator:
         """
         現在のディレクトリのファイルリストを更新します。
         """
-        self.files = ['..'] + os.listdir(self.current_dir)  # ファイルリストを再取得
+        self.files = ['Create New File', '..'] + os.listdir(self.current_dir)  # ファイルリストを再取得
         self.selected_index = 0  # 選択インデックスをリセット
         self.offset = 0  # オフセットをリセット
 
@@ -62,7 +63,9 @@ class FileNavigator:
                     self.offset += 1  # オフセットを調整
         elif key == ord('\n'):
             selected_file = self.files[self.selected_index]
-            if os.path.isdir(selected_file):
+            if selected_file == 'Create New File':
+                self.create_new_file()
+            elif os.path.isdir(selected_file):
                 self.current_dir = os.path.abspath(selected_file)  # ディレクトリを変更
                 os.chdir(self.current_dir)  # カレントディレクトリを変更
                 self.refresh_file_list()  # ファイルリストを更新
@@ -72,9 +75,28 @@ class FileNavigator:
                 curses.endwin()  # cursesモードを終了
                 subprocess.run(['less', selected_file])  # lessコマンドでファイルを表示
                 curses.doupdate()  # cursesモードを再開
+        elif key == ord('n'):
+            self.create_new_file()
         elif key == ord('q'):
             return False  # 'q'キーが押されたら終了
         return True
+
+    def create_new_file(self) -> None:
+        """
+        新しいファイルを作成し、vimで開きます。
+        """
+        curses.echo()
+        self.stdscr.addstr(self.display_height, 0, "Enter new file name: ")
+        new_file_name = self.stdscr.getstr(self.display_height, 20, 60).decode('utf-8')
+        curses.noecho()
+        if new_file_name:
+            open(new_file_name, 'w').close()  # 新しいファイルを作成
+            self.stdscr.clear()
+            self.stdscr.refresh()
+            curses.endwin()  # cursesモードを終了
+            open_with_vim(new_file_name)  # vimで新しいファイルを開く
+            curses.doupdate()  # cursesモードを再開
+            self.refresh_file_list()  # ファイルリストを更新
 
 def list_files(stdscr: curses.window) -> None:
     """
