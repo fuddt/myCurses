@@ -57,19 +57,18 @@ class FileNavigator:
         self.stdscr.addstr(self.scroller.display_height + 2, 0, "Press 'q' to quit.")
         self.stdscr.refresh()
 
-    def display_menu(self) -> None:
+    def display_menu(self, options) -> None:
         """
         メニューを表示します。
         """
         self.stdscr.clear()
-        menu_options = ["view", "edit", "remove", "back"]
-        for i, option in enumerate(menu_options):
+        for i, option in enumerate(options.keys()):
             if i == self.selected_option:
                 self.stdscr.addstr(i, 0, f"> {option}", curses.A_REVERSE)
             else:
                 self.stdscr.addstr(i, 0, f"  {option}")
         # メニュー画面にも q の説明を追加
-        self.stdscr.addstr(len(menu_options), 0, "Press 'q' to quit.")
+        self.stdscr.addstr(len(options), 0, "Press 'q' to quit.")
         self.stdscr.refresh()
 
     def run(self) -> None:
