@@ -68,18 +68,43 @@ class NewFileCommand(Command):
 
 # 状態管理の基底クラス
 class State(ABC):
+    """
+    状態管理の基底クラス。各状態はこのクラスを継承して実装されます。
+    """
+
     @abstractmethod
     def handle_input(self, navigator: FileNavigator, key: int) -> None:
+        """
+        ユーザーの入力を処理します。
+
+        :param navigator: FileNavigatorオブジェクト
+        :param key: ユーザーが押したキー
+        """
         pass
 
     @abstractmethod
     def display(self, navigator: FileNavigator) -> None:
+        """
+        状態に応じた表示を行います。
+
+        :param navigator: FileNavigatorオブジェクト
+        """
         pass
 
 
 # ファイルリストの表示状態
 class FileListState(State):
+    """
+    ファイルリストの表示状態を管理するクラス。
+    """
+
     def handle_input(self, navigator: FileNavigator, key: int) -> None:
+        """
+        ユーザーの入力を処理します。
+
+        :param navigator: FileNavigatorオブジェクト
+        :param key: ユーザーが押したキー
+        """
         if key == curses.KEY_UP:
             navigator.scroller.scroll_up()
         elif key == curses.KEY_DOWN:
@@ -98,6 +123,11 @@ class FileListState(State):
             navigator.exit()
 
     def display(self, navigator: FileNavigator) -> None:
+        """
+        ファイルリストを表示します。
+
+        :param navigator: FileNavigatorオブジェクト
+        """
         navigator.display_files()
 
 
